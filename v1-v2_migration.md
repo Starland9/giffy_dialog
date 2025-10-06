@@ -20,7 +20,7 @@ This document describes the migration from the v1 to the v2 version of the Giffy
 
 - The `FlareGiffyDialog` class has been replaced with the `GiffyDialog.rive` constructor.
 - The `flarePath` and `flareAnimation` properties in the old API is now can be set using the `rive` property of
-  type `RiveAnimation` in the new API.
+  type `RiveWidget` (or any other `Widget` that renders a Rive graphic in versions `>=3.0.0`) in the new API.
 
 ### Other common changes
 

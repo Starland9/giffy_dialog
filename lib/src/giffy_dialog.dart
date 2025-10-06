@@ -135,9 +135,9 @@ class GiffyDialog extends StatelessWidget {
     this.entryAnimation = EntryAnimation.none,
   }) : giffy = image;
 
-  /// Creates a giffy dialog which uses a [RiveAnimation] as the [giffy].
+  /// Creates a giffy dialog which uses a [RiveWidget] or [RiveWidgetBuilder] as the [giffy].
   const GiffyDialog.rive(
-    RiveAnimation rive, {
+    Widget rive, {
     super.key,
     this.giffyBuilder = defaultGiffyBuilder,
     this.giffyPadding,

@@ -6,8 +6,8 @@ import 'package:rive/rive.dart' hide Image;
 
 import 'entry_animation.dart';
 
-part 'giffy_dialog.dart';
 part 'giffy_bottom_sheet.dart';
+part 'giffy_dialog.dart';
 
 /// {@template giffyDialog.giffyModal.giffyBuilder}
 /// Builder that is called to build the [giffy].
@@ -70,7 +70,7 @@ class GiffyModal extends StatelessWidget {
   /// {@template giffyDialog.giffyModal.giffy}
   /// The widget or the gif to be displayed at the top of the modal.
   ///
-  /// Typically, an [Image], [RiveAnimation] or [Lottie] widget.
+  /// Typically, an [Image], [RiveWidget], [RiveWidgetBuilder] or [Lottie] widget.
   /// {@endtemplate}
   final Widget giffy;
 

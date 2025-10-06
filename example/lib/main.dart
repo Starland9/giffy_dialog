@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rive/rive.dart';
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await RiveNative.init();
+  runApp(const MyApp());
+}
 
 final material3Notifier = ValueNotifier<bool>(true);
 
@@ -158,7 +163,7 @@ class TypedExample extends StatelessWidget {
         },
         rive: () {
           return GiffyDialog.rive(
-            rive.giffy as RiveAnimation,
+            rive.giffy,
             giffyBuilder: (context, rive) {
               return ClipRRect(
                 borderRadius: useMaterial3
@@ -195,7 +200,7 @@ class TypedExample extends StatelessWidget {
         },
         rive: () {
           return GiffyBottomSheet.rive(
-            rive.giffy as RiveAnimation,
+            rive.giffy,
             giffyBuilder: (context, rive) {
               return ClipRRect(
                 borderRadius: useMaterial3
@@ -307,10 +312,10 @@ class GiffyModel {
 
   factory GiffyModel.rive(BuildContext context) {
     return GiffyModel(
-      giffy: RiveAnimation.network(
-        'https://cdn.rive.app/animations/vehicles.riv',
-        fit: BoxFit.cover,
-        placeHolder: Center(child: CircularProgressIndicator()),
+      giffy: const _NetworkRiveGiffy(
+        url: 'https://cdn.rive.app/animations/vehicles.riv',
+        fit: Fit.cover,
+        placeholder: Center(child: CircularProgressIndicator()),
       ),
       title: Text(
         'Rive Animation',
@@ -358,6 +363,67 @@ class GiffyModel {
           child: const Text('OK'),
         ),
       ],
+    );
+  }
+}
+
+class _NetworkRiveGiffy extends StatefulWidget {
+  const _NetworkRiveGiffy({
+    required this.url,
+    required this.fit,
+    this.placeholder,
+    this.alignment = Alignment.center,
+  });
+
+  final String url;
+  final Fit fit;
+  final Widget? placeholder;
+  final Alignment alignment;
+
+  @override
+  State<_NetworkRiveGiffy> createState() => _NetworkRiveGiffyState();
+}
+
+class _NetworkRiveGiffyState extends State<_NetworkRiveGiffy> {
+  late final FileLoader _fileLoader;
+
+  @override
+  void initState() {
+    super.initState();
+    _fileLoader = FileLoader.fromUrl(widget.url, riveFactory: Factory.rive);
+  }
+
+  @override
+  void dispose() {
+    _fileLoader.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RiveWidgetBuilder(
+      fileLoader: _fileLoader,
+      builder: (context, state) {
+        if (state is RiveLoading) {
+          return widget.placeholder ?? const SizedBox.shrink();
+        }
+        if (state is RiveFailed) {
+          return Center(
+            child: Text(
+              'Failed to load Rive animation',
+              textAlign: TextAlign.center,
+            ),
+          );
+        }
+        if (state is RiveLoaded) {
+          return RiveWidget(
+            controller: state.controller,
+            fit: widget.fit,
+            alignment: widget.alignment,
+          );
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 }

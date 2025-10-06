@@ -1,3 +1,20 @@
+## 3.0.0
+
+🚨 Breaking
+
+- Migrate to the Rive 0.14 runtime which removes the `RiveAnimation` widget in
+  favor of the new `RiveWidget`/`RiveWidgetBuilder` API.
+- `GiffyDialog.rive` and `GiffyBottomSheet.rive` now accept any `Widget` that
+  renders a Rive graphic. Pass a `RiveWidget` or `RiveWidgetBuilder` from the
+  updated Rive package.
+
+✨ Improvements
+
+- Document the new Rive integration flow and update the example app to use the
+  recommended `RiveWidgetBuilder` with `FileLoader`.
+- Bump the minimum supported Dart SDK to `>=3.5.0 <4.0.0` to match the new Rive
+  requirements.
+
 ## 2.3.0
 
 - Bump rive version to `^0.13.10`.

@@ -85,6 +85,73 @@ Or use it like a bottom sheet:
      ),
    ),
    builder: (BuildContext context) {
+
+    ### Using Rive animations
+
+    When working with Rive 0.14 or newer you should provide a `RiveWidget` (or a
+    `RiveWidgetBuilder`) to the `GiffyDialog.rive` or `GiffyBottomSheet.rive`
+    constructors. Make sure to call `await RiveNative.init()` before using Rive in
+    your app:
+
+    ```dart
+    Future<void> main() async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await RiveNative.init();
+      runApp(const MyApp());
+    }
+
+    class NetworkRiveExample extends StatefulWidget {
+      const NetworkRiveExample({super.key});
+
+      @override
+      State<NetworkRiveExample> createState() => _NetworkRiveExampleState();
+    }
+
+    class _NetworkRiveExampleState extends State<NetworkRiveExample> {
+      late final FileLoader fileLoader;
+
+      @override
+      void initState() {
+        super.initState();
+        fileLoader = FileLoader.fromUrl(
+          'https://cdn.rive.app/animations/vehicles.riv',
+          riveFactory: Factory.rive,
+        );
+      }
+
+      @override
+      void dispose() {
+        fileLoader.dispose();
+        super.dispose();
+      }
+
+      @override
+      Widget build(BuildContext context) {
+        return GiffyDialog.rive(
+          RiveWidgetBuilder(
+            fileLoader: fileLoader,
+            builder: (context, state) => switch (state) {
+              RiveLoading() => const SizedBox.shrink(),
+              RiveFailed() => Text('Failed to load: ${state.error}'),
+              RiveLoaded() => RiveWidget(
+                  controller: state.controller,
+                  fit: Fit.cover,
+                ),
+              _ => const SizedBox.shrink(),
+            },
+          ),
+          title: const Text('Rive Animation'),
+          content: const Text('This dialog renders a Rive graphic.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      }
+    }
+    ```
      return GiffyBottomSheet.image(
        Image.network(
          "https://raw.githubusercontent.com/Shashank02051997/FancyGifDialog-Android/master/GIF's/gif14.gif",
